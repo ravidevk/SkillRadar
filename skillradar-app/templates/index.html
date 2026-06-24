@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillRadar &mdash; Hyper-Local Expert Finder</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="radar-bg" aria-hidden="true">
+  <svg viewBox="0 0 400 400" class="radar-rings">
+    <circle cx="200" cy="200" r="180" />
+    <circle cx="200" cy="200" r="130" />
+    <circle cx="200" cy="200" r="80" />
+    <circle cx="200" cy="200" r="4" class="radar-dot" />
+  </svg>
+</div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span class="logo-text">SkillRadar</span>
+    </div>
+    <span class="topbar-tag">Hyper-local expert finder &middot; prototype</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="intro">
+    <p class="eyebrow">ASK YOUR QUESTION</p>
+    <h1>Find the right expert, two floors away.</h1>
+    <p class="lede">Describe what you're stuck on like you'd ask a colleague. SkillRadar finds who can actually help &mdash; and how close they are right now.</p>
+  </section>
+
+  <section class="search-panel" aria-label="Search for an expert">
+    <form id="search-form" autocomplete="off">
+
+      <label class="field-label" for="query">What are you stuck on?</label>
+      <textarea id="query" name="query" rows="3"
+        placeholder="e.g. I keep getting a crash loop back-off error in my Kubernetes cluster and Docker isn't building."></textarea>
+
+      <div class="row-fields">
+        <div class="field">
+          <label class="field-label" for="name">Your name</label>
+          <input type="text" id="name" name="name" value="Alice" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label class="field-label" for="building">Your building</label>
+          <select id="building" name="building">
+            {% for b in buildings %}
+            <option value="{{ b }}" {% if b == 'A' %}selected{% endif %}>Building {{ b }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="floor">Your floor</label>
+          <select id="floor" name="floor">
+            {% for f in floors %}
+            <option value="{{ f }}" {% if f == 3 %}selected{% endif %}>Floor {{ f }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" id="search-btn" class="btn-primary">
+        <span class="btn-icon">&#128270;</span> Find an expert
+      </button>
+    </form>
+
+    <div class="try-examples">
+      <span>Try:</span>
+      <button class="example-chip" data-example="I keep getting a crash loop back-off error in my Kubernetes cluster and Docker isn't building.">Kubernetes crash loop</button>
+      <button class="example-chip" data-example="I need help running a usability test and cleaning up a Figma prototype before a client review.">Figma usability test</button>
+      <button class="example-chip" data-example="Our payments microservice keeps timing out and I think it's a Postgres connection pool issue.">Postgres timeout issue</button>
+      <button class="example-chip" data-example="I need to understand vendor contract terms before we renew a SaaS subscription.">Vendor contract question</button>
+    </div>
+  </section>
+
+  <section id="results-section" class="results-section" hidden>
+    <div class="results-header">
+      <p class="eyebrow">TOP MATCHES</p>
+      <p id="results-meta" class="results-meta"></p>
+    </div>
+    <div id="expanded-terms" class="expanded-terms" hidden></div>
+    <div id="results-list" class="results-list"></div>
+  </section>
+
+  <section id="empty-state" class="empty-state">
+    <div class="empty-icon">&#9678;</div>
+    <p>No search yet. Describe a real blocker above and SkillRadar will scan the mock employee directory for the closest, most relevant match.</p>
+  </section>
+
+</main>
+
+<div id="ping-modal" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    <p class="eyebrow">AI-DRAFTED INTRO MESSAGE</p>
+    <h3 id="modal-title">Ready to send</h3>
+    <div class="modal-message" id="modal-message"></div>
+    <p class="modal-note">This is a prototype &mdash; no message is actually sent. Wire this button to a real Slack/Teams webhook to go live.</p>
+    <button class="btn-primary" id="modal-copy">Copy message</button>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>SkillRadar prototype &middot; matching runs locally via TF&#8209;IDF + cosine similarity over a 20&#8209;person mock directory &middot; no external API calls</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
